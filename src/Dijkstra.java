@@ -10,20 +10,23 @@ public class Dijkstra {
     private PriorityQueue<int[]> pq;
     private graphicsPanel p;
 
-    Dijkstra(graphicsPanel panel) {
+    public Dijkstra(graphicsPanel panel, String mode) {
         p = panel;
         start = p.findStart().clone();
         p.setTile(start[0], start[1], -1);
         end = p.findEnd().clone();
         p.setTile(end[0], end[1], -1);
 
-        Comparator<int[]> comparator = new thirdIntComparator();
+        Comparator<int[]> comparator;
+        if (mode.equals("A*")) comparator = new AStarComparator();
+        else comparator = new dijkstraComparator();
         pq = new PriorityQueue<>(comparator);
         pq.add(new int[]{start[0], start[1], 0});
         if (pq.peek() != null) recursiveDijkstra(pq.peek());
         shortestPath(end);
     }
 
+    /** Recursive algorithm to fill tiles */
     private void recursiveDijkstra(int[] tile) {
         if (!reached && p.getTile(tile[0], tile[1]) == -1) {
             p.setTile(tile[0], tile[1], tile[2]);
@@ -45,6 +48,7 @@ public class Dijkstra {
         if (pq.peek() != null) recursiveDijkstra(pq.peek());
     }
 
+    /** Find shortest path through filled array */
     private void shortestPath(int[] tile) {
         if (tile[0] != start[0] || tile[1] != start[1]) {
             p.paintTile(tile[0], tile[1], new Color(255, 255, 255, 150));
@@ -75,11 +79,22 @@ public class Dijkstra {
         }
     }
 
-    class thirdIntComparator implements Comparator<int[]> {
+    class dijkstraComparator implements Comparator<int[]> {
         @Override
         public int compare(int[] x, int[] y) {
             if (x[2] > y[2]) return 1;
             else if (x[2] < y[2]) return -1;
+            else return 0;
+        }
+    }
+
+    class AStarComparator implements Comparator<int[]> {
+        @Override
+        public int compare(int[] x, int[] y) {
+            double xDist = Math.hypot(x[0] - end[0], x[1] - end[1]);
+            double yDist = Math.hypot(y[0] - end[0], y[1] - end[1]);
+            if (xDist > yDist) return 1;
+            else if (xDist < yDist) return -1;
             else return 0;
         }
     }

@@ -9,6 +9,8 @@ class Search {
     private Frame mainFrame;
     private Panel controlPanel;
     private graphicsPanel graphicsPanel;
+    private String algorithm = "Dijkstra";
+    private Button algorithmButton;
 
     void prepareGUI() {
         mainFrame = new Frame();
@@ -24,28 +26,46 @@ class Search {
         });
 
         controlPanel = new Panel();
-        controlPanel.setLayout(new FlowLayout());
-        controlPanel.setSize(mainFrame.getWidth(), 50);
+        controlPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c2 = new GridBagConstraints();
+        controlPanel.setSize(mainFrame.getWidth(), 100);
 
         Button runButton = new Button("Run");
         runButton.setActionCommand("Run");
         runButton.addActionListener(ButtonListener);
-        controlPanel.add(runButton);
+        c2.fill = GridBagConstraints.HORIZONTAL;
+        controlPanel.add(runButton, c2);
 
         Button clearButton = new Button("Clear");
         clearButton.setActionCommand("Clear");
         clearButton.addActionListener(ButtonListener);
-        controlPanel.add(clearButton);
+        controlPanel.add(clearButton, c2);
 
         Button placeStartButton = new Button("Starting Position");
         placeStartButton.setActionCommand("PlaceStart");
         placeStartButton.addActionListener(ButtonListener);
-        controlPanel.add(placeStartButton);
+        c2.gridwidth = 2;
+        controlPanel.add(placeStartButton, c2);
+
+        Button resetButton = new Button("Reset");
+        resetButton.setActionCommand("Reset");
+        resetButton.addActionListener(ButtonListener);
+        c2.gridx = 0;
+        c2.gridwidth = 1;
+        controlPanel.add(resetButton, c2);
+
+        algorithmButton = new Button("Dijkstra");
+        algorithmButton.setActionCommand("toggleAlgorithm");
+        algorithmButton.addActionListener(ButtonListener);
+        c2.gridx = 1;
+        controlPanel.add(algorithmButton, c2);
 
         Button placeGoalButton = new Button("Goal Position");
         placeGoalButton.setActionCommand("PlaceGoal");
         placeGoalButton.addActionListener(ButtonListener);
-        controlPanel.add(placeGoalButton);
+        c2.gridx = 2;
+        c2.gridwidth = 2;
+        controlPanel.add(placeGoalButton, c2);
 
         mainFrame.add(controlPanel, c);
 
@@ -70,11 +90,21 @@ class Search {
             String command = e.getActionCommand();
             switch (command) {
                 case "Run":
-                    new Dijkstra(graphicsPanel);
+                    switch(algorithm) {
+                        case "Dijkstra":
+                            new Dijkstra(graphicsPanel, "Dijkstra");
+                            break;
+                        case "A*":
+                            new Dijkstra(graphicsPanel, "A*");
+                            break;
+                    }
                     break;
                 case "Clear":
                     graphicsPanel.fill(-1, -1);
                     graphicsPanel.paintCheckerboard();
+                    break;
+                case "Reset":
+                    graphicsPanel.reset();
                     break;
                 case "PlaceStart":
                     graphicsPanel.setMode("PlaceStart");
@@ -82,6 +112,16 @@ class Search {
                 case "PlaceGoal":
                     graphicsPanel.setMode("PlaceGoal");
                     break;
+                case "toggleAlgorithm":
+                    switch(algorithm) {
+                        case "Dijkstra":
+                            algorithm = "A*";
+                            break;
+                        case "A*":
+                            algorithm = "Dijkstra";
+                            break;
+                    }
+                    algorithmButton.setLabel(algorithm);
             }
         }
     }
