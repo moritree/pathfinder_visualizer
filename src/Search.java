@@ -90,6 +90,7 @@ class Search {
             String command = e.getActionCommand();
             switch (command) {
                 case "Run":
+                    graphicsPanel.reset();
                     switch(algorithm) {
                         case "Dijkstra":
                             new Dijkstra(graphicsPanel, "Dijkstra");

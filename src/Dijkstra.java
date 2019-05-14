@@ -95,6 +95,8 @@ public class Dijkstra {
             double yDist = Math.hypot(y[0] - end[0], y[1] - end[1]);
             if (xDist > yDist) return 1;
             else if (xDist < yDist) return -1;
+            else if (x[2] > y[2]) return 1;
+            else if (x[2] < y[2]) return -1;
             else return 0;
         }
     }
