@@ -10,7 +10,7 @@ public class Dijkstra {
     private PriorityQueue<int[]> pq;
     private graphicsPanel p;
 
-    public Dijkstra(graphicsPanel panel, String mode) {
+    public Dijkstra(graphicsPanel panel, String algorithm) {
         p = panel;
         start = p.findStart().clone();
         p.setTile(start[0], start[1], -1);
@@ -18,8 +18,9 @@ public class Dijkstra {
         p.setTile(end[0], end[1], -1);
 
         Comparator<int[]> comparator;
-        if (mode.equals("A*")) comparator = new AStarComparator();
+        if (algorithm.equals("A*")) comparator = new AStarComparator();
         else comparator = new dijkstraComparator();
+
         pq = new PriorityQueue<>(comparator);
         pq.add(new int[]{start[0], start[1], 0});
         if (pq.peek() != null) recursiveDijkstra(pq.peek());
@@ -50,7 +51,7 @@ public class Dijkstra {
 
     /** Find shortest path through filled array */
     private void shortestPath(int[] tile) {
-        if (tile[0] != start[0] || tile[1] != start[1]) {
+        while (tile[0] != start[0] || tile[1] != start[1]) {
             p.paintTile(tile[0], tile[1], new Color(255, 255, 255, 150));
 
             int min = p.getTile(tile[0], tile[1]);
@@ -75,7 +76,8 @@ public class Dijkstra {
                 mintile[1] = 1;
             }
 
-            shortestPath(new int[]{tile[0] + mintile[0], tile[1] + mintile[1]});
+            tile[0] += mintile[0];
+            tile[1] += mintile[1];
         }
     }
 
