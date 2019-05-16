@@ -51,7 +51,7 @@ public class Dijkstra {
 
     /** Find shortest path through filled array */
     private void shortestPath(int[] tile) {
-        while (tile[0] != start[0] || tile[1] != start[1]) {
+        while ((tile[0] != start[0] || tile[1] != start[1]) && tile[2] == -1) {
             p.paintTile(tile[0], tile[1], new Color(255, 255, 255, 150));
 
             int min = p.getTile(tile[0], tile[1]);
